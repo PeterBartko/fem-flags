@@ -5,6 +5,7 @@ import type { CountryAPI } from '../utils/types'
 import Link from "next/link"
 import Head from "next/head"
 import { BsArrowLeft } from "react-icons/bs";
+import { IoMdHeartEmpty } from "react-icons/io"
 
 export const getStaticPaths = async () => {
   const res = await fetch('https://restcountries.com/v3.1/all?fields=borders,capital,currencies,languages,name,flags,population,region,subregion,tld,cca3')
@@ -22,13 +23,15 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context: any) => {
   const code = context.params.country
-  const res = await fetch(`https://restcountries.com/v3.1/alpha/${code}?fields=borders,capital,currencies,languages,name,flags,population,region,subregion,tld,cca3`)
+  const res = await fetch(`https://restcountries.com/v3.1/alpha/${code}`)
   const data = await res.json()
 
   return {
-    props: {country: data}
+    props: {country: data[0]}
   }
 }
+
+const empty = (obj: {}) => Object.keys(obj).length === 0
 
 interface Props {
   country: CountryAPI
@@ -60,7 +63,7 @@ const country: NextPage<Props> = ({country}) => {
               <div>
                 <span>
                   <p className="font-bold">Native Name: </p>
-                  <p className="dark:text-white/80">{Object.values(country.name.nativeName)[0]['common']}</p>
+                  <p className="dark:text-white/80">{!empty(country.name.nativeName) ? Object.values(country.name.nativeName)[0]['common'] : null}</p>
                 </span>
                 <span>
                   <p className="font-bold">Population: </p>
@@ -86,7 +89,7 @@ const country: NextPage<Props> = ({country}) => {
                 </span>
                 <span>
                   <p className="font-bold">Currencies: </p> 
-                  <p className="dark:text-white/80">{Object.values(country.currencies)[0]['name']}</p>
+                  <p className="dark:text-white/80">{!empty(country.currencies) ? Object.values(country.currencies)[0]['name'] : null}</p>
                 </span>
                 <span>
                   <p className="font-bold">Languages: </p>
