@@ -45,7 +45,7 @@ const country: NextPage<Props> = ({ country }) => {
         <meta name="keywords" content="flags, countries" />
         <link rel="icon" href={country.flags.svg} />
       </Head>
-      <div className="relative grid place-content-center min-h-screen p-5 pb-10">
+      <div className="relative flex items justify-center min-h-[110vh] sm:min-h-screen p-5 pb-10">
         <Link href="/">
           <a className="absolute z-50 top-5 sm:left-16 left-5 flex items-center bg-white dark:bg-darkBlue rounded shadow py-1 px-5 gap-2">
             <BsArrowLeft />
@@ -53,7 +53,7 @@ const country: NextPage<Props> = ({ country }) => {
           </a>
         </Link>
 
-        <div className="flex flex-col dtl:flex-row items-center gap-16">
+        <div className="flex flex-col dtl:flex-row items-center gap-16 mt-8">
           <img
             src={country.flags.svg}
             alt={`${country.name.common} flag`}
@@ -111,7 +111,7 @@ const country: NextPage<Props> = ({ country }) => {
                 </span>
               </div>
             </div>
-            <span className="items-center flex-wrap h-max">
+            <span className="flex items-center flex-wrap">
               <p className="font-bold w-full dtl:w-fit">Border Countries:</p>
               {country?.borders?.map((b, i) => (
                 <Link key={i} href={`/${b}`}>
