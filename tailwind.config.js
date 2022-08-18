@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {
@@ -15,9 +12,12 @@ module.exports = {
         veryLightGray: 'hsl(0, 0%, 98%)', // Light Mode Background
       },
       screens: {
-        'dtl': '1400px',
-        'ccntr': '735px',
-        'dtlsm': '667px',
+        dtl: '1400px',
+        ccntr: '735px',
+        dtlsm: '667px',
+      },
+      gridTemplateColumns: {
+        auto: 'repeat(auto-fit, minmax(240px, 1fr))',
       },
     },
   },

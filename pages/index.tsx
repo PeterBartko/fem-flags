@@ -4,13 +4,15 @@ import Head from 'next/head'
 import Card from '../components/Card'
 import SelectRegion from '../components/SelectRegion'
 import type { CountryAPI } from '../utils/types'
-import { AiOutlineSearch as Search } from "react-icons/ai";
+import { AiOutlineSearch as Search } from 'react-icons/ai'
 
 export const getStaticProps = async () => {
-  const res = await fetch('https://restcountries.com/v3.1/all?fields=name,flags,population,region,capital,cca3')
+  const res = await fetch(
+    'https://restcountries.com/v3.1/all?fields=name,flags,population,region,capital,cca3'
+  )
   const data = await res.json()
   return {
-    props: {countries_sp: data}
+    props: { countries_sp: data },
   }
 }
 
@@ -19,19 +21,12 @@ interface Props {
 }
 
 const Home: NextPage<Props> = ({ countries_sp }) => {
-  const [countries, setCountries] = useState<CountryAPI[]>(countries_sp);
+  const [countries, setCountries] = useState<CountryAPI[]>(countries_sp)
 
-  const searchCountry = async (value: string) => {
-    if (value == '') {
-      setCountries(countries_sp)
-      return
-    }
-
-    const res = await fetch(`https://restcountries.com/v3.1/name/${value}`)
-    const data = await res.json()
-
-    setCountries(data?.message ? [] : data)
-  }
+  const searchCountry = async (value: string) =>
+    setCountries(
+      countries_sp.filter(c => c.name.common.toLowerCase().indexOf(value.toLowerCase()) != -1)
+    )
 
   return (
     <>
@@ -41,22 +36,30 @@ const Home: NextPage<Props> = ({ countries_sp }) => {
         <meta name="keywords" content="flags, countries" />
         <link rel="icon" href="/flag.svg" />
       </Head>
-      <div className='relative px-5 py-7 sm:px-16 min-h-[calc(100vh-55.19px)]'>
-        <div className='flex items-center justify-between flex-col gap-5 ccntr:flex-row'>
-          <div className="relative flex items-center w-full"> 
-            <input type="text" placeholder="Search for a country..." onInput={(e: any) => searchCountry(e.target.value)} className="shadow-md w-full ccntr:w-[25rem] pl-12 bg-white dark:bg-darkBlue py-3 rounded pr-2" />
-            <Search className='absolute top-1/2 -translate-y-1/2 left-4 text-xl'/>
+
+      <div className="relative px-5 py-7 sm:px-16 min-h-[calc(100vh-55.19px)]">
+        <div className="flex items-center justify-between flex-col gap-5 ccntr:flex-row">
+          <div className="relative flex items-center w-full">
+            <input
+              type="text"
+              placeholder="Search for a country..."
+              onInput={(e: any) => searchCountry(e.target.value)}
+              className="shadow-md w-full ccntr:w-[25rem] pl-12 bg-white dark:bg-darkBlue py-3 rounded pr-2"
+            />
+            <Search className="absolute top-1/2 -translate-y-1/2 left-4 text-xl" />
           </div>
-          
+
           <SelectRegion setCountries={setCountries} />
-
         </div>
-        <div className='flex flex-wrap justify-center ccntr:justify-between gap-y-8 mt-8 -ml-7'>
-          {countries.length != 0 ? countries?.map((c: CountryAPI, i) => (
-            <Card key={i} country={c} />
-          )) : <p className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:text-2xl font-bold'>No such countries</p>}
+        <div className="flex flex-wrap justify-center ccntr:justify-between gap-y-8 mt-8 -ml-7">
+          {countries.length != 0 ? (
+            countries?.map((c: CountryAPI, i) => <Card key={i} country={c} />)
+          ) : (
+            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:text-2xl font-bold">
+              No such countries
+            </p>
+          )}
         </div>
-
       </div>
     </>
   )

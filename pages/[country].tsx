@@ -1,51 +1,40 @@
-import type { NextPage } from "next/types"
-import { formatStrArr } from "../utils/helpers"
+import type { NextPage } from 'next/types'
+import { formatStrArr } from '../utils/helpers'
 import toFullName from '../utils/country-name-cache'
 import type { CountryAPI } from '../utils/types'
-import Link from "next/link"
-import Head from "next/head"
-import { BsArrowLeft } from "react-icons/bs";
+import Link from 'next/link'
+import Head from 'next/head'
+import { BsArrowLeft } from 'react-icons/bs'
 
 export const getStaticPaths = async () => {
-  const res = await fetch('https://restcountries.com/v3.1/all?fields=borders,capital,currencies,languages,name,flags,population,region,subregion,tld,cca3')
+  const res = await fetch('https://restcountries.com/v3.1/all')
   const data = await res.json()
 
   const paths = data.map((c: CountryAPI) => ({
-    params: {country: '' + c.cca3}
-  })) 
+    params: { country: '' + c.cca3 },
+  }))
 
   return {
     paths,
-    fallback: false
+    fallback: false,
   }
 }
 
 export const getStaticProps = async (context: any) => {
   const code = context.params.country
-  let res: Response
-  if (code != 'BRN')
-    res = await fetch(`https://restcountries.com/v3.1/alpha/${code}?fields=borders,capital,currencies,languages,name,flags,population,region,subregion,tld,cca3`)
-  else 
-    res = await fetch(`https://restcountries.com/v3.1/alpha/${code}`)
-  const data = code == 'BRN' ? (await res.json())[0] : await res.json()
+  const res = await fetch(`https://restcountries.com/v3.1/alpha/${code}`)
+  const data = (await res.json())[0]
 
   return {
-    props: {country: data}
+    props: { country: data },
   }
-}
-
-const empty = (obj: {}) => {
-  console.log(obj)
-  if (!obj) return false
-  return Object.keys(obj).length === 0
 }
 
 interface Props {
   country: CountryAPI
 }
 
-const country: NextPage<Props> = ({country}) => {
-
+const country: NextPage<Props> = ({ country }) => {
   console.log(country)
 
   return (
@@ -56,24 +45,31 @@ const country: NextPage<Props> = ({country}) => {
         <meta name="keywords" content="flags, countries" />
         <link rel="icon" href={country.flags.svg} />
       </Head>
-      <div className="relative grid place-content-center min-h-[calc(100vh-55.19px)] px-5 pt-5">
-        
+      <div className="relative grid place-content-center min-h-screen p-5 pb-10">
         <Link href="/">
-          <a className="absolute top-10 sm:left-16 left-5 flex items-center bg-white dark:bg-darkBlue rounded shadow py-1 px-5 gap-2">
+          <a className="absolute z-50 top-5 sm:left-16 left-5 flex items-center bg-white dark:bg-darkBlue rounded shadow py-1 px-5 gap-2">
             <BsArrowLeft />
             <p>Back</p>
           </a>
         </Link>
-        
+
         <div className="flex flex-col dtl:flex-row items-center gap-16">
-          <img src={country.flags.svg} alt={`${country.name.common} flag`} className="w-full dtlsm:w-[600px]"/>
-          <div className="[&_span]:flex [&_span]:gap-2 max-w-[600px]">
+          <img
+            src={country.flags.svg}
+            alt={`${country.name.common} flag`}
+            className="w-full dtlsm:w-[600px] mt-8"
+          />
+          <div className="[&_span]:flex [&_span]:gap-2 max-w-[600px] -mb-[6rem] sm:mt-0">
             <h2 className="text-3xl font-bold">{country.name.common}</h2>
             <div className="flex flex-col dtlsm:flex-row items-start gap-14 justify-between my-8 [&>div]:space-y-2">
               <div>
                 <span>
                   <p className="font-bold">Native Name: </p>
-                  <p className="dark:text-white/80">{!empty(country.name.nativeName) ? Object.values(country.name.nativeName)[0]['common'] : null}</p>
+                  <p className="dark:text-white/80">
+                    {'nativeName' in country.name
+                      ? Object.values(country.name.nativeName)[0]['common']
+                      : 'undefined'}
+                  </p>
                 </span>
                 <span>
                   <p className="font-bold">Population: </p>
@@ -98,24 +94,34 @@ const country: NextPage<Props> = ({country}) => {
                   <p className="dark:text-white/80">{formatStrArr(country.tld)}</p>
                 </span>
                 <span>
-                  <p className="font-bold">Currencies: </p> 
-                  <p className="dark:text-white/80">{!empty(country.currencies) ? Object.values(country.currencies)[0]['name'] : null}</p>
+                  <p className="font-bold">Currencies: </p>
+                  <p className="dark:text-white/80">
+                    {'currencies' in country
+                      ? Object?.values(country.currencies)[0]['name']
+                      : 'undefined'}
+                  </p>
                 </span>
                 <span>
                   <p className="font-bold">Languages: </p>
-                  <p className="dark:text-white/80">{formatStrArr(Object?.values(country.languages))}</p>
+                  <p className="dark:text-white/80">
+                    {'languages' in country
+                      ? formatStrArr(Object?.values(country.languages))
+                      : 'undefined'}
+                  </p>
                 </span>
               </div>
             </div>
-              <span className="items-center flex-wrap">
-                <p className="font-bold w-full dtl:w-fit">Border Countries:</p>
-                {country?.borders?.map((b, i) => (
-                  <Link key={i} href={`/${b}`}>
-                    <div className="bg-white dark:bg-darkBlue px-4 py-2 rounded shadow cursor-pointer">{toFullName[b]}</div>
-                  </Link>
-                ))}
-              </span>
-            </div>
+            <span className="items-center flex-wrap h-max">
+              <p className="font-bold w-full dtl:w-fit">Border Countries:</p>
+              {country?.borders?.map((b, i) => (
+                <Link key={i} href={`/${b}`}>
+                  <div className="bg-white dark:bg-darkBlue px-4 py-2 rounded shadow cursor-pointer">
+                    {toFullName[b]}
+                  </div>
+                </Link>
+              ))}
+            </span>
+          </div>
         </div>
       </div>
     </>
