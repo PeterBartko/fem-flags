@@ -35,8 +35,6 @@ interface Props {
 }
 
 const country: NextPage<Props> = ({ country }) => {
-  console.log(country)
-
   return (
     <>
       <Head>
@@ -45,7 +43,8 @@ const country: NextPage<Props> = ({ country }) => {
         <meta name="keywords" content="flags, countries" />
         <link rel="icon" href={country.flags.svg} />
       </Head>
-      <div className="relative flex items justify-center min-h-[110vh] sm:min-h-screen p-5 pb-10">
+
+      <div className="relative flex items-center justify-center min-h-screen p-5 pb-10">
         <Link href="/">
           <a className="absolute z-50 top-5 sm:left-16 left-5 flex items-center bg-white dark:bg-darkBlue rounded shadow py-1 px-5 gap-2">
             <BsArrowLeft />
@@ -59,7 +58,7 @@ const country: NextPage<Props> = ({ country }) => {
             alt={`${country.name.common} flag`}
             className="w-full dtlsm:w-[600px] mt-8"
           />
-          <div className="[&_span]:flex [&_span]:gap-2 max-w-[600px] -mb-[6rem] sm:mt-0">
+          <div className="[&_span]:flex [&_span]:gap-2 max-w-[600px] sm:mt-0">
             <h2 className="text-3xl font-bold">{country.name.common}</h2>
             <div className="flex flex-col dtlsm:flex-row items-start gap-14 justify-between my-8 [&>div]:space-y-2">
               <div>
